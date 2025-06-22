@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: codealpha-urlshortener
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+    healthCheckPath: / 
