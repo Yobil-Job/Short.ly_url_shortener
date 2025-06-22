@@ -9,13 +9,13 @@
   
   <br/>
   
-  <a href="#">
+  <a href="https://short-ly-6oe6.onrender.com">
     <img src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=rocket&logoColor=white" alt="Live Demo"/>
   </a>
-  <a href="https://github.com/your-username/your-repo/stargazers">
+  <a href="https://github.com/Yobil-Job/Short.ly_url_shortener/stargazers">
     <img src="https://img.shields.io/github/stars/your-username/your-repo?style=for-the-badge&logo=github&color=FFC107" alt="Stars"/>
   </a>
-  <a href="https://github.com/your-username/your-repo/network/members">
+  <a href="https://github.com/Yobil-Job/Short.ly_url_shortener/network/members">
     <img src="https://img.shields.io/github/forks/your-username/your-repo?style=for-the-badge&logo=github&color=4CAF50" alt="Forks"/>
   </a>
 
