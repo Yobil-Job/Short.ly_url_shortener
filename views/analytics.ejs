@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/header', { 
+    title: 'Analytics - ' + url.shortCode,
+    user: user
+  }) %>
+</head>
+<body>
+  <div class="container">
+    <h1>Analytics for <%= baseUrl %>/<%= url.shortCode %></h1>
+    <p class="original-url">
+      <strong>Original URL:</strong> 
+      <a href="<%= url.originalUrl %>" target="_blank" rel="noopener noreferrer">
+        <%= url.originalUrl %>
+      </a>
+    </p>
+    
+    <div class="analytics-grid">
+      <!-- Click Trends Chart -->
+      <div class="analytics-card">
+        <h3>Click Trends</h3>
+        <%- include('partials/analytics-charts', {
+          type: 'line', 
+          data: {
+            labels: Object.keys(clickTrends || {}),
+            values: Object.values(clickTrends || {})
+          },
+          height: '300px'
+        }) %>
+      </div>
+      
+      <!-- Geographic Distribution -->
+      <% if (geoData && Object.keys(geoData).length > 0) { %>
+        <div class="analytics-card">
+          <h3>Geographic Distribution</h3>
+          <%- include('partials/analytics-charts', {
+            type: 'map',
+            data: geoData,
+            height: '300px'
+          }) %>
+        </div>
+      <% } %>
+      
+      <!-- Device Breakdown -->
+      <div class="analytics-card">
+        <h3>Device Breakdown</h3>
+        <%- include('partials/analytics-charts', {
+          type: 'pie',
+          data: deviceData || {},
+          height: '300px'
+        }) %>
+      </div>
+    </div>
+    
+    <!-- Click Log Table -->
+    <div class="click-log">
+      <h3>Detailed Click Log</h3>
+      <% if (url.clicks && url.clicks.length > 0) { %>
+        <div class="table-responsive">
+          <table class="click-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Location</th>
+                <th>Device</th>
+                <th>Referrer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% url.clicks.forEach(click => { %>
+                <tr>
+                  <td><%= new Date(click.clickedAt).toLocaleString() %></td>
+                  <td><%= click.ipLocation || 'Unknown' %></td>
+                  <td class="device-cell">
+                    <% if (click.userAgent) { %>
+                      <% 
+                        let deviceType = 'Unknown';
+                        if (/mobile/i.test(click.userAgent)) {
+                          deviceType = 'Mobile';
+                        } else if (/tablet|ipad/i.test(click.userAgent)) {
+                          deviceType = 'Tablet';
+                        } else if (/windows|macintosh|linux/i.test(click.userAgent)) {
+                          deviceType = 'Desktop';
+                        }
+                      %>
+                      <%= deviceType %>
+                      <div class="tooltip">
+                        <%= click.userAgent %>
+                      </div>
+                    <% } else { %>
+                      Unknown
+                    <% } %>
+                  </td>
+                  <td><%= click.referrer || 'Direct' %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p class="no-data">No click data available</p>
+      <% } %>
+    </div>
+  </div>
+  
+  <%- include('partials/footer') %>
+
+  <script>
+    // Add tooltip functionality
+    document.querySelectorAll('.device-cell').forEach(cell => {
+      cell.addEventListener('mouseenter', function() {
+        const tooltip = this.querySelector('.tooltip');
+        if (tooltip) tooltip.style.visibility = 'visible';
+      });
+      cell.addEventListener('mouseleave', function() {
+        const tooltip = this.querySelector('.tooltip');
+        if (tooltip) tooltip.style.visibility = 'hidden';
+      });
+    });
+
+    // Device type classification
+    function getDeviceType(userAgent) {
+      if (/mobile/i.test(userAgent)) return 'Mobile';
+      if (/tablet|ipad/i.test(userAgent)) return 'Tablet';
+      if (/windows|macintosh|linux/i.test(userAgent)) return 'Desktop';
+      return 'Unknown';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<div class="chart-container" style="position: relative; height: <%- typeof height !== 'undefined' ? height : '300px' %>; width: 100%;">
+    <% if (typeof type !== 'undefined' && type === 'line') { %>
+        <canvas id="trendChart"></canvas>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    const ctx = document.getElementById('trendChart').getContext('2d');
+                    const rawChartData = <%- JSON.stringify(data || {}) %>;    
+                    const labels = Object.keys(rawChartData);
+                    const values = Object.values(rawChartData);
+                    
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Clicks',
+                                data: values,
+                                borderColor: '#4f46e5',
+                                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                                tension: 0.3,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.parsed.y + ' clicks';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Line chart error:', error);
+                }
+            });
+        </script>
+    <% } else if (typeof type !== 'undefined' && type === 'pie') { %>
+        <canvas id="pieChart"></canvas>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    const ctx = document.getElementById('pieChart').getContext('2d');
+                    const chartData = <%- JSON.stringify(data || {}) %>;
+                    const dataValues = Object.values(chartData);
+                    const total = dataValues.reduce((sum, val) => sum + val, 0);
+                    
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: Object.keys(chartData),
+                            datasets: [{
+                                data: dataValues,
+                                backgroundColor: [
+                                    '#4f46e5', '#10b981', '#f59e0b', 
+                                    '#ef4444', '#8b5cf6', '#06b6d4',
+                                    '#84cc16', '#f97316', '#ec4899'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { 
+                                    position: 'right',
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.raw;
+                                            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                            return context.label + ': ' + value + ' (' + percentage + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Pie chart error:', error);
+                }
+            });
+        </script>
+    <% } else if (typeof type !== 'undefined' && type === 'bar') { %>
+        <canvas id="barChart"></canvas>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    const ctx = document.getElementById('barChart').getContext('2d');
+                    const chartData = <%- JSON.stringify(data || {}) %>;
+                    
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: Object.keys(chartData),
+                            datasets: [{
+                                label: 'Clicks',
+                                data: Object.values(chartData),
+                                backgroundColor: '#4f46e5',
+                                borderWidth: 1,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Bar chart error:', error);
+                }
+            });
+        </script>
+    <% } else if (typeof type !== 'undefined' && type === 'map') { %>
+        <div class="map-placeholder">
+            <img src="/images/world-map.svg" alt="World map" class="base-map">
+            <div class="map-points">
+                <% if (typeof data === 'object' && data !== null) { %>
+                    <% Object.entries(data).forEach(([country, count]) => { %>
+                        <div class="map-point" 
+                             style="top: <%- Math.random() * 80 + 10 %>%;
+                                    left: <%- Math.random() * 80 + 10 %>%"
+                             data-count="<%- count %>"
+                             title="<%- country %>: <%- count %> clicks">
+                        </div>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="chart-error">Invalid chart type specified</div>
+    <% } %>
+</div>

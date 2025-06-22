@@ -1,0 +1,21 @@
+<div class="url-card <%= url.isCustom ? 'custom-url' : '' %>">
+  <div class="url-info">
+    <a href="/<%= url.shortCode %>" target="_blank" class="short-url">
+      <%= baseUrl %>/<%= url.shortCode %>
+      <% if (url.isCustom) { %>
+        <span class="custom-badge">Custom</span>
+      <% } %>
+    </a>
+    <p class="original-url"><%= url.originalUrl %></p>
+  </div>
+  <div class="url-meta">
+    <span class="click-count"><%= url.clicks.length %> clicks</span>
+    <button 
+      class="copy-btn" 
+      onclick="copyToClipboard('<%= baseUrl %>/<%= url.shortCode %>')"
+    >
+      Copy
+    </button>
+    <a href="/analytics/<%= url.shortCode %>" class="analytics-link">View Analytics</a>
+  </div>
+</div>

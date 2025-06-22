@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/header', {title: 'Dashboard - URL Shortener', user: user}) %>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Shorten Your Links in Seconds</h1>
+      <div class="url-form">
+        <form action="/shorten" method="POST" id="url-form">
+          <div class="input-group">
+            <input 
+              type="url" 
+              name="originalUrl" 
+              placeholder="Paste your long URL here" 
+              required
+              oninput="validateUrl(this)"
+            >
+            <button type="submit" id="submit-btn">
+              <span class="btn-text">Shorten</span>
+              <div class="loader hidden"></div>
+            </button>
+          </div>
+          
+          <div id="form-error" class="error-message hidden"></div>
+
+          <div class="custom-code-toggle">
+            <input type="checkbox" id="custom-toggle" onchange="toggleCustomCode()">
+            <label for="custom-toggle">Use Custom Link</label>
+            <input 
+              type="text" 
+              name="customCode" 
+              id="custom-code-input" 
+              placeholder="your-custom-alias" 
+              class="hidden"
+              pattern="[A-Za-z0-9_-]{4,20}"
+              title="4-20 characters (letters, numbers, _, -)"
+            >
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Stats Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Links</h3>
+        <p><%= totalLinks %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Clicks</h3>
+        <p><%= totalClicks %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Popular Link</h3>
+        <p><%= mostPopular ? mostPopular.shortCode : 'N/A' %></p>
+      </div>
+    </section>
+
+    <!-- Recent URLs -->
+    <section class="recent-urls">
+      <h2>Your Recent Links</h2>
+      <% if (recentUrls.length > 0) { %>
+        <div class="url-list">
+          <% recentUrls.forEach(url => { %>
+            <%- include('partials/url-card', {url}) %>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="empty-state">No shortened URLs yet. Create your first one above!</p>
+      <% } %>
+    </section>
+  </div>
+
+  <%- include('partials/footer') %>
+  <script src="/js/main.js"></script>
+  <script>
+    // Client-side validation and toggle functions
+    function toggleCustomCode() {
+      const input = document.getElementById('custom-code-input');
+      input.classList.toggle('hidden');
+    }
+    
+    function validateUrl(input) {
+      // URL validation logic
+    }
+  </script>
+</body>
+</html>

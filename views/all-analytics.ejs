@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/header', { title: 'All Analytics - URL Shortener', user: user }) %>
+<body>
+  <div class="container">
+    <h1>Your Link Analytics</h1>
+    
+    <div class="stats-summary">
+      <div class="stat-card">
+        <h3>Total Links</h3>
+        <p><%= totalLinks %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Clicks</h3>
+        <p><%= totalClicks %></p>
+      </div>
+    </div>
+
+    <div class="analytics-grid">
+      <!-- Click Trends Chart -->
+      <div class="analytics-card">
+        <h3>Click Trends</h3>
+        <%- include('partials/analytics-charts', {
+          type: 'line', 
+          data: clickTrends || {},
+          height: '300px'
+        }) %>
+      </div>
+      
+      <!-- Device Breakdown -->
+      <div class="analytics-card">
+        <h3>Device Breakdown</h3>
+        <%- include('partials/analytics-charts', {
+          type: 'pie',
+          data: deviceData || {},
+          height: '300px'
+        }) %>
+      </div>
+    </div>
+
+    <section class="popular-links">
+      <h2>Your Links</h2>
+      <% if (urls && urls.length > 0) { %>
+        <div class="url-list">
+          <% urls.forEach(url => { %>
+            <%- include('partials/url-card', { 
+              url, 
+              baseUrl: baseUrl 
+            }) %>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="empty-state">No links created yet</p>
+      <% } %>
+    </section>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

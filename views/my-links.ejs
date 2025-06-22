@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/header', {title: 'My Links - URL Shortener', user: user}) %>
+</head>
+<body>
+  <div class="container">
+    <h1>My Links</h1>
+    <p class="page-description">Manage and track all your shortened URLs</p>
+    
+    <% if (urls && urls.length > 0) { %>
+      <div class="url-stats">
+        <div class="stat-card">
+          <h3>Total Links</h3>
+          <p><%= urls.length %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Clicks</h3>
+          <p><%= urls.reduce((sum, url) => sum + url.clicks.length, 0) %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Custom Links</h3>
+          <p><%= urls.filter(url => url.isCustom).length %></p>
+        </div>
+      </div>
+      
+      <div class="url-filters">
+        <button class="filter-btn active" data-filter="all">All Links</button>
+        <button class="filter-btn" data-filter="custom">Custom Links</button>
+        <button class="filter-btn" data-filter="popular">Most Popular</button>
+      </div>
+      
+      <div class="url-list">
+        <% urls.forEach(url => { %>
+          <%- include('partials/url-card', {url, baseUrl}) %>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <i class="fas fa-link" style="font-size: 3rem; color: var(--gray); margin-bottom: 1rem;"></i>
+        <h2>No links yet</h2>
+        <p>You haven't created any shortened URLs yet.</p>
+        <a href="/" class="btn-primary">Create Your First Link</a>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('partials/footer') %>
+  
+  <script>
+    // Filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        const filter = this.getAttribute('data-filter');
+        const urlCards = document.querySelectorAll('.url-card');
+        
+        urlCards.forEach(card => {
+          switch(filter) {
+            case 'all':
+              card.style.display = 'block';
+              break;
+            case 'custom':
+              if (card.classList.contains('custom-url')) {
+                card.style.display = 'block';
+              } else {
+                card.style.display = 'none';
+              }
+              break;
+            case 'popular':
+              const clicks = parseInt(card.querySelector('.click-count').textContent);
+              if (clicks > 0) {
+                card.style.display = 'block';
+              } else {
+                card.style.display = 'none';
+              }
+              break;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html> 
