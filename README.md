@@ -24,7 +24,7 @@
 ---
 
 <a href="https://short-ly-6oe6.onrender.com">
-   <h3>Live demo</h3>
+   Live demo
   </a>
 
 ### **🧠 Backend Architecture & Design Philosophy**
